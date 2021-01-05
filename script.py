@@ -18,3 +18,12 @@ print(df.min())
 
 # Maximum par mois
 print(df.max())
+
+# Affichage des vues mensuelles
+month_number = 0
+for month in data_climat.head():
+    plt.xlabel('Jours de '+month)
+    plt.ylabel('Température (°C)')
+    plt.plot(df.iloc[:,month_number])
+    month_number = month_number+1
+    plt.show()
