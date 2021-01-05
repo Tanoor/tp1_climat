@@ -27,3 +27,40 @@ for month in data_climat.head():
     plt.plot(df.iloc[:,month_number])
     month_number = month_number+1
     plt.show()
+
+# Affichage de la vue annuelle 
+fig, ax = plt.subplots()
+
+year_values = np.concatenate((df.iloc[:, 0], df.iloc[:, 1], df.iloc[:, 2], df.iloc[:, 3], df.iloc[:, 4], df.iloc[:, 5], df.iloc[:, 6], df.iloc[:, 7], df.iloc[:, 8], df.iloc[:, 9], df.iloc[:, 10], df.iloc[:, 11]))
+year_values = [x for x in year_values if str(x) != 'nan']
+line, = ax.plot(year_values)
+ax.set(xlabel='Jour de l\'année', ylabel='Temperature (°C)', title='Evolution de la température sur l\'année')
+annotation = ax.annotate("", xy=(0,0), xytext=(-20,20),textcoords="offset points", bbox=dict(boxstyle="round", fc="w"), arrowprops=dict(arrowstyle="->"))
+annotation.set_visible(False)
+
+def update_annotation(ind):
+    x,y = line.get_data()
+    annotation.xy = (x[ind["ind"][0]], y[ind["ind"][0]])
+    text = year_values[ind["ind"][0]]
+    annotation.set_text(text)
+    annotation.get_bbox_patch().set_alpha(0.4)
+
+def hover(event):
+    vis = annotation.get_visible()
+    if event.inaxes == ax:
+        cont, ind = line.contains(event)
+        if cont:
+            update_annotation(ind)
+            annotation.set_visible(True)
+            fig.canvas.draw_idle()
+        else:
+            if vis:
+                annotation.set_visible(False)
+                fig.canvas.draw_idle()
+
+fig.canvas.mpl_connect("motion_notify_event", hover)
+
+plt.show(block=False)
+plt.show()
+
+
