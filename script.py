@@ -70,6 +70,20 @@ plt.show()
 data_climat = pd.read_excel('./data/Climat.xlsx', 'SI -erreur', header=2, usecols="D:O").iloc[1:32]
 df = pd.DataFrame(data_climat)
 
+# Suppression des valeurs string en remplaçant pas la moyenne entre la valeur d'avant et celle d'après
+for month in range(len(df.count())):
+    for day in range(len(df.iloc[:, month])):
+        if df.iloc[day, month] == "0xFFFF" or df.iloc[day, month] == "Sun":
+            df.iloc[day, month] = (df.iloc[day+1, month] + df.iloc[day-1, month])/2
+
+for month in range(len(df.count())):
+    avg_month = np.mean(df.iloc[:, month])
+    for day in range(len(df.iloc[:, month])):
+        if np.abs(avg_month-df.iloc[day, month]) > 20:
+            df.iloc[day, month] = (df.iloc[day+1, month] + df.iloc[day-1, month])/2
+
+print(df)
+
 # Calcul des moyennes par mois
 print(np.mean(df))
 
