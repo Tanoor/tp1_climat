@@ -99,7 +99,7 @@ for month in range(len(df.count())):
 Les valeurs corrigées respectent globalement celles qui étaient indiquées dans la feuille `SI`.
 
 Feuille avec remplacement des string          |  Feuille entièrement corrigée
-:-------------------------:|:-----------:|:-----------:
+:-------------------------:|:-----------:
 ![](img/vue_annee_sans_string.png)  |  ![](img/vue_annee_corrigee.png) 
 
 ## Enquête sur la capitale mystère 
