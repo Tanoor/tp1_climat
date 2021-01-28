@@ -24,6 +24,12 @@ def hover(event):
                 annotation.set_visible(False)
                 fig.canvas.draw_idle()
 
+def compareListValuesSimilarity(list1, list2):
+    similarity = 0
+    for i in range(0, len(list1)):
+        similarity += abs(list1[i]-list2[i])
+    return similarity
+
 # ------------ Traitement de la feuille SI ------------
 
 data_climat = pd.read_excel('./data/Climat.xlsx', 'SI ', header=2, usecols="D:O").iloc[1:32]
@@ -119,3 +125,33 @@ fig.canvas.mpl_connect("motion_notify_event", hover)
 
 plt.show(block=False)
 plt.show()
+
+# Liste des capitales d'Europe (https://worldpopulationreview.com/continents/capitals/europe)
+capitals = ["Mariehamn" ,"Tirana" ,"Andorra la Vella" ,"Vienna" ,"Minsk" ,"Brussels" ,"Sarajevo" ,"Sofia" ,"Zagreb" ,"Nicosia" ,"Prague" ,"Copenhagen" ,"Tallinn" ,"Tórshavn" ,"Helsinki" ,"Paris" ,"Berlin" ,"Gibraltar" ,"Athens" ,"St. Peter Port" ,"Budapest" ,"Reykjavik" ,"Dublin" ,"Douglas" ,"Rome" ,"Saint Helier" ,"Pristina" ,"Riga" ,"Vaduz" ,"Vilnius" ,"Luxembourg" ,"Skopje" ,"Valletta" ,"Chișinău" ,"Monaco" ,"Podgorica" ,"Amsterdam" ,"Oslo" ,"Warsaw" ,"Lisbon" ,"Bucharest" ,"Moscow" ,"City of San Marino" ,"Belgrade" ,"Bratislava" ,"Ljubljana" ,"Madrid" ,"Longyearbyen" ,"Stockholm" ,"Bern" ,"Kiev" ,"London" ,"Vatican City"]
+
+# Lecture d'un fichier récupéré sur Kaggle.com (https://www.kaggle.com/sudalairajkumar/daily-temperature-of-major-cities)
+df_kaggle = pd.read_csv('./data/City_temperature_major_cities.csv')
+
+# Filtre sur l'année 2018 et sur les villes d'Europe en retirant les colonnes inutiles à l'analyse
+df_kaggle = df_kaggle[(df_kaggle.Year == 2018) & (df_kaggle.Region == 'Europe') & (df_kaggle.City.isin(capitals))].drop(['Country', 'Region', 'State', 'Year'], 1)
+
+# Conversion Fahrenheit ou Celsius
+df_kaggle['AvgTemperature'] = (df_kaggle['AvgTemperature']-32)/1.8
+
+mystery_temperatures = list(np.mean(df_climat_SI))
+
+avg_temperature_per_city = df_kaggle.groupby("City")
+
+score = 100
+winner = ""
+
+# Comparaison de la moyenne des températures par mois avec le fichier mystère
+for city in list(avg_temperature_per_city.groups):
+    current_temparatures = list(avg_temperature_per_city.get_group(city).groupby("Month")['AvgTemperature'].mean())
+    currentScore = compareListValuesSimilarity(mystery_temperatures, current_temparatures)
+    if currentScore < score:
+        score = currentScore
+        winner = city
+
+# Affichage de la ville gagnante : Moscou
+print(winner)
