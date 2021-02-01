@@ -4,15 +4,15 @@
 
 Les librairies suivantes sont à installer pour faire fonctionner le projet.
 
-Installation de scipy :
+Installation de `Scipy` :
 ```
 pip install scipy
 ```
-Installation de matplotlib :
+Installation de `Matplotlib` :
 ```
 pip install matplotlib
 ```
-Installation de pandas :
+Installation de `Pandas` :
 ```
 pip install pandas
 pip install xlrd
@@ -104,14 +104,14 @@ Feuille avec remplacement des string          |  Feuille entièrement corrigée
 
 ## Enquête sur la capitale mystère 
 
-La liste des capitales d'Europ a été récupéré sur ce [lien](https://worldpopulationreview.com/continents/capitals/europe) :
+La liste des capitales d'Europe a été récupérée sur ce [lien](https://worldpopulationreview.com/continents/capitals/europe) :
 
 ```
 # Liste des capitales d'Europe (https://worldpopulationreview.com/continents/capitals/europe)
 capitals = ["Mariehamn" ,"Tirana" ,"Andorra la Vella" ,"Vienna" ,"Minsk" ,"Brussels" ,"Sarajevo" ,"Sofia" ,"Zagreb" ,"Nicosia" ,"Prague" ,"Copenhagen" ,"Tallinn" ,"Tórshavn" ,"Helsinki" ,"Paris" ,"Berlin" ,"Gibraltar" ,"Athens" ,"St. Peter Port" ,"Budapest" ,"Reykjavik" ,"Dublin" ,"Douglas" ,"Rome" ,"Saint Helier" ,"Pristina" ,"Riga" ,"Vaduz" ,"Vilnius" ,"Luxembourg" ,"Skopje" ,"Valletta" ,"Chișinău" ,"Monaco" ,"Podgorica" ,"Amsterdam" ,"Oslo" ,"Warsaw" ,"Lisbon" ,"Bucharest" ,"Moscow" ,"City of San Marino" ,"Belgrade" ,"Bratislava" ,"Ljubljana" ,"Madrid" ,"Longyearbyen" ,"Stockholm" ,"Bern" ,"Kiev" ,"London" ,"Vatican City"]
 ```
 
-On utilise un fichier récupéré sur [Kaggle.com](https://www.kaggle.com/sudalairajkumar/daily-temperature-of-major-cities). Ce fichier est filtré sur l'Europe, ses capitales ainsi que l'année 2018 (année utilisée également dans le fichier `Savukoski kirkonkyla.xlsx`) :
+On utilise un fichier récupéré sur [Kaggle.com](https://www.kaggle.com/sudalairajkumar/daily-temperature-of-major-cities). Ce fichier est filtré sur l'Europe, ses capitales uniquement ainsi que l'année 2018 (année utilisée également dans le fichier `Savukoski kirkonkyla.xlsx`) :
 
 ```
 # Filtre sur l'année 2018 et sur les villes d'Europe en retirant les colonnes inutiles à l'analyse
@@ -156,9 +156,11 @@ winnersTopValues = dict(sorted(winnersTopValues.items(), key=lambda item: item[1
 
 On obtient ensuite un graphique par méthode de calcul. Plus le score est faible, plus il est probable que la ville soit la bonne.
 
-Comparaison des moyennes mensuelles (gagnant : Moscou) |  Comparaison des écart-types mensuels (gagnant : Oslo)|  Comparaison des moyennes quotidiennes (gagnant : Oslo)
-:-------------------------:|:-----------:|:-----------:
-![](img/top_avg_month.png)  |  ![](img/top_std_month.png) |  ![](img/top_avg_day.png) 
+Comparaison des moyennes mensuelles |  Comparaison des écart-types mensuels |  Comparaison des moyennes quotidiennes 
+|:-------------------------:|:-----------:|:-----------:|
+| Gagnant : Moscou  |  Gagnant : Oslo |  Gagnant : Oslo|
+|![](img/top_avg_month.png)  |  ![](img/top_std_month.png) |  ![](img/top_avg_day.png) |
+
 
 Affichage des 3 top 1 :
 
