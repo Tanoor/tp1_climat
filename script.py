@@ -138,20 +138,55 @@ df_kaggle = df_kaggle[(df_kaggle.Year == 2018) & (df_kaggle.Region == 'Europe') 
 # Conversion Fahrenheit ou Celsius
 df_kaggle['AvgTemperature'] = (df_kaggle['AvgTemperature']-32)/1.8
 
-mystery_temperatures = list(np.mean(df_climat_SI))
-
-avg_temperature_per_city = df_kaggle.groupby("City")
-
-score = 100
-winner = ""
+# Création du top des villes en fonction des méthodes de calcul
+winnersTopAvg = dict()
+winnersTopStd = dict()
+winnersTopValues = dict()
 
 # Comparaison de la moyenne des températures par mois avec le fichier mystère
-for city in list(avg_temperature_per_city.groups):
-    current_temparatures = list(avg_temperature_per_city.get_group(city).groupby("Month")['AvgTemperature'].mean())
-    currentScore = compareListValuesSimilarity(mystery_temperatures, current_temparatures)
-    if currentScore < score:
-        score = currentScore
-        winner = city
+for city in list(df_kaggle.groupby("City").groups):
+    current_temperatures = list(df_kaggle.groupby("City").get_group(city).groupby("Month")['AvgTemperature'].mean())
+    currentScore = compareListValuesSimilarity(list(np.mean(df_climat_SI)), current_temperatures)
+    winnersTopAvg[city] = currentScore
+winnersTopAvg = dict(sorted(winnersTopAvg.items(), key=lambda item: item[1]))
 
-# Affichage de la ville gagnante : Moscou
-print(winner)
+# Comparaison de l'écart-type des températures par mois avec le fichier mystère
+for city in list(df_kaggle.groupby("City").groups):
+    current_temperatures = list(df_kaggle.groupby("City").get_group(city).groupby("Month")['AvgTemperature'].std())
+    currentScore = compareListValuesSimilarity(list(np.std(df_climat_SI)), current_temperatures)
+    winnersTopStd[city] = currentScore
+winnersTopStd = dict(sorted(winnersTopStd.items(), key=lambda item: item[1]))
+
+# Comparaison des valeurs des températures par jour avec le fichier mystère
+for city in list(df_kaggle.groupby("City").groups):
+    current_temperatures = list(df_kaggle.groupby("City").get_group(city)['AvgTemperature'])
+    currentScore = compareListValuesSimilarity(year_values, current_temperatures)
+    winnersTopValues[city] = currentScore
+winnersTopValues = dict(sorted(winnersTopValues.items(), key=lambda item: item[1]))
+
+# Affichage de la ville gagnante en fonction de la méthode de calcul
+print('Comparaison des moyennes mensuelles : '+ list(winnersTopAvg.keys())[0])
+print('Comparaison des écart-types mensuels : '+ list(winnersTopStd.keys())[0])
+print('Comparaison des moyennes quotidiennes : '+ list(winnersTopValues.keys())[0])
+
+# Affichage des villes gagnantes avec graphique
+x, y = zip(*list(winnersTopAvg.items())[:5])
+plt.xlabel('Villes')
+plt.ylabel('Différence de température sur les moyennes mensuelles')
+plt.title('Top des villes similaires')
+plt.plot(x, y)
+plt.show()
+
+x, y = zip(*list(winnersTopStd.items())[:5])
+plt.xlabel('Villes')
+plt.ylabel('Différence de température sur les écart-types mensuels')
+plt.title('Top des villes similaires')
+plt.plot(x, y)
+plt.show()
+
+x, y = zip(*list(winnersTopValues.items())[:5])
+plt.xlabel('Villes')
+plt.ylabel('Différence de température cumulée sur les moyennes quotidiennes')
+plt.title('Top des villes similaires')
+plt.plot(x, y)
+plt.show()
