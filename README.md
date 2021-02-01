@@ -121,21 +121,50 @@ df_kaggle = df_kaggle[(df_kaggle.Year == 2018) & (df_kaggle.Region == 'Europe') 
 df_kaggle['AvgTemperature'] = (df_kaggle['AvgTemperature']-32)/1.8
 ```
 
-Pour finir, une comparaison est effectuée sur les températures en comparant la grandeur de la différence entre le fichier mystère et les données de Kaggle :
+Tout d'abord une comparaison est faites sur la moyenne mensuelle de chacun des mois :
 
 ```
 # Comparaison de la moyenne des températures par mois avec le fichier mystère
-for city in list(avg_temperature_per_city.groups):
-    current_temparatures = list(avg_temperature_per_city.get_group(city).groupby("Month")['AvgTemperature'].mean())
-    currentScore = compareListValuesSimilarity(mystery_temperatures, current_temparatures)
-    if currentScore < score:
-        score = currentScore
-        winner = city
+for city in list(df_kaggle.groupby("City").groups):
+    current_temperatures = list(df_kaggle.groupby("City").get_group(city).groupby("Month")['AvgTemperature'].mean())
+    currentScore = compareListValuesSimilarity(list(np.mean(df_climat_SI)), current_temperatures)
+    winnersTopAvg[city] = currentScore
+winnersTopAvg = dict(sorted(winnersTopAvg.items(), key=lambda item: item[1]))
 ```
 
-Affichage de notre ville gagnante : **Moscou**
+Puis une comparaison des écart-type mensuels :
 
 ```
-# Affichage de la ville gagnante
-print(winner)
+# Comparaison de l'écart-type des températures par mois avec le fichier mystère
+for city in list(df_kaggle.groupby("City").groups):
+    current_temperatures = list(df_kaggle.groupby("City").get_group(city).groupby("Month")['AvgTemperature'].std())
+    currentScore = compareListValuesSimilarity(list(np.std(df_climat_SI)), current_temperatures)
+    winnersTopStd[city] = currentScore
+winnersTopStd = dict(sorted(winnersTopStd.items(), key=lambda item: item[1]))
+```
+
+Pour finir, une comparaison est effectuée sur les moyennes des températures quotidiennes en comparant la grandeur de la différence entre le fichier mystère et les données de Kaggle :
+
+```
+# Comparaison des valeurs des températures par jour avec le fichier mystère
+for city in list(df_kaggle.groupby("City").groups):
+    current_temperatures = list(df_kaggle.groupby("City").get_group(city)['AvgTemperature'])
+    currentScore = compareListValuesSimilarity(year_values, current_temperatures)
+    winnersTopValues[city] = currentScore
+winnersTopValues = dict(sorted(winnersTopValues.items(), key=lambda item: item[1]))
+```
+
+On obtient ensuite un graphique par méthode de calcul. Plus le score est faible, plus il est probable que la ville soit la bonne.
+
+Comparaison des moyennes mensuelles (gagnant : Moscou) |  Comparaison des écart-types mensuels (gagnant : Oslo)|  Comparaison des moyennes quotidiennes (gagnant : Oslo)
+:-------------------------:|:-----------:|:-----------:
+![](img/top_avg_month.png)  |  ![](img/top_std_month.png) |  ![](img/top_avg_day.png) 
+
+Affichage des 3 top 1 :
+
+```
+# Affichage de la ville gagnante en fonction de la méthode de calcul
+print('Comparaison des moyennes mensuelles : '+ list(winnersTopAvg.keys())[0])
+print('Comparaison des écart-types mensuels : '+ list(winnersTopStd.keys())[0])
+print('Comparaison des moyennes quotidiennes : '+ list(winnersTopValues.keys())[0])
 ```

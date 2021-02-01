@@ -88,8 +88,6 @@ for month in range(len(df_climent_SI_erreur.count())):
         if np.abs(avg_month-df_climent_SI_erreur.iloc[day, month]) > 20:
             df_climent_SI_erreur.iloc[day, month] = (df_climent_SI_erreur.iloc[day+1, month] + df_climent_SI_erreur.iloc[day-1, month])/2
 
-print(df_climent_SI_erreur)
-
 # Calcul des moyennes par mois
 print(np.mean(df_climent_SI_erreur))
 
