@@ -30,6 +30,12 @@ def compareListValuesSimilarity(list1, list2):
         similarity += abs(list1[i]-list2[i])
     return similarity
 
+def compareListValuesSlidingStandardDeviation(list1, list2, radius):
+    similarity = 0
+    for i in range(radius, len(list1)-radius):
+        similarity += abs(np.std(list1[i-radius:i+radius])-np.std(list2[i-radius:i+radius]))
+    return similarity
+
 # ------------ Traitement de la feuille SI ------------
 
 data_climat = pd.read_excel('./data/Climat.xlsx', 'SI ', header=2, usecols="D:O").iloc[1:32]
@@ -140,6 +146,7 @@ df_kaggle['AvgTemperature'] = (df_kaggle['AvgTemperature']-32)/1.8
 winnersTopAvg = dict()
 winnersTopStd = dict()
 winnersTopValues = dict()
+winnersTopStdSlide = dict()
 
 # Comparaison de la moyenne des températures par mois avec le fichier mystère
 for city in list(df_kaggle.groupby("City").groups):
@@ -162,29 +169,44 @@ for city in list(df_kaggle.groupby("City").groups):
     winnersTopValues[city] = currentScore
 winnersTopValues = dict(sorted(winnersTopValues.items(), key=lambda item: item[1]))
 
+# Comparaison de l'écart-type glissant par jour avec le fichier mystère
+for city in list(df_kaggle.groupby("City").groups):
+    current_temperatures = list(df_kaggle.groupby("City").get_group(city)['AvgTemperature'])
+    currentScore = compareListValuesSlidingStandardDeviation(year_values, current_temperatures, 15)
+    winnersTopStdSlide[city] = currentScore
+winnersTopStdSlide = dict(sorted(winnersTopStdSlide.items(), key=lambda item: item[1]))
+
 # Affichage de la ville gagnante en fonction de la méthode de calcul
 print('Comparaison des moyennes mensuelles : '+ list(winnersTopAvg.keys())[0])
 print('Comparaison des écart-types mensuels : '+ list(winnersTopStd.keys())[0])
 print('Comparaison des moyennes quotidiennes : '+ list(winnersTopValues.keys())[0])
+print('Comparaison des écart-types glissants : '+ list(winnersTopStdSlide.keys())[0])
 
 # Affichage des villes gagnantes avec graphique
 x, y = zip(*list(winnersTopAvg.items())[:5])
 plt.xlabel('Villes')
 plt.ylabel('Différence de température sur les moyennes mensuelles')
 plt.title('Top des villes similaires')
-plt.plot(x, y)
+plt.bar(x, y)
 plt.show()
 
 x, y = zip(*list(winnersTopStd.items())[:5])
 plt.xlabel('Villes')
 plt.ylabel('Différence de température sur les écart-types mensuels')
 plt.title('Top des villes similaires')
-plt.plot(x, y)
+plt.bar(x, y)
 plt.show()
 
 x, y = zip(*list(winnersTopValues.items())[:5])
 plt.xlabel('Villes')
 plt.ylabel('Différence de température cumulée sur les moyennes quotidiennes')
 plt.title('Top des villes similaires')
-plt.plot(x, y)
+plt.bar(x, y)
+plt.show()
+
+x, y = zip(*list(winnersTopStdSlide.items())[:5])
+plt.xlabel('Villes')
+plt.ylabel('Différence de température sur les écart-types glissants')
+plt.title('Top des villes similaires')
+plt.bar(x, y)
 plt.show()
