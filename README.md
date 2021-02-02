@@ -156,17 +156,18 @@ winnersTopValues = dict(sorted(winnersTopValues.items(), key=lambda item: item[1
 
 On obtient ensuite un graphique par méthode de calcul. Plus le score est faible, plus il est probable que la ville soit la bonne.
 
-Comparaison des moyennes mensuelles |  Comparaison des écart-types mensuels |  Comparaison des moyennes quotidiennes 
-|:-------------------------:|:-----------:|:-----------:|
-| Gagnant : Moscou  |  Gagnant : Oslo |  Gagnant : Oslo|
-|![](img/top_avg_month.png)  |  ![](img/top_std_month.png) |  ![](img/top_avg_day.png) |
+Comparaison des moyennes mensuelles |  Comparaison des écart-types mensuels |  Comparaison des moyennes quotidiennes | Comparaison des écart-types glissants
+|:-------------------------:|:-----------:|:-----------:|:-----------:|
+| Gagnant : Moscou  |  Gagnant : Oslo |  Gagnant : Oslo| Gagnant : Riga|
+|![](img/top_avg_month.png)  |  ![](img/top_std_month.png) |  ![](img/top_avg_day.png) | ![](img/top_sliding_std_day.png) |
 
 
-Affichage des 3 top 1 :
+Affichage des 4 top 1 :
 
 ```
 # Affichage de la ville gagnante en fonction de la méthode de calcul
 print('Comparaison des moyennes mensuelles : '+ list(winnersTopAvg.keys())[0])
 print('Comparaison des écart-types mensuels : '+ list(winnersTopStd.keys())[0])
 print('Comparaison des moyennes quotidiennes : '+ list(winnersTopValues.keys())[0])
+print('Comparaison des écart-types glissants : '+ list(winnersTopStdSlide.keys())[0])
 ```
